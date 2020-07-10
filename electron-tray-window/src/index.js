@@ -39,6 +39,10 @@ function validation(options) {
 
   return true;
 }
+function setPosition(x,y)
+{
+  window.setPosition(x,y)
+}
 
 function init(options) {
   setWindowSize(options);
@@ -49,6 +53,10 @@ function init(options) {
   tray.on("click", function(event) {
     ipcMain.emit("tray-window-clicked", { window: window, tray: tray });
     toggleWindow();
+  });
+
+  window.on('move', function() {
+    ipcMain.emit("tray-window-moved", { window: window, tray: tray });
   });
 
   setWindowAutoHide();
@@ -131,6 +139,11 @@ function toggleWindow() {
 
   showWindow();
   ipcMain.emit("tray-window-visible", { window: window, tray: tray });
+
+
+  ipcMain.emit("tray-window-moved", { window: window, tray: tray });
+ 
+
 }
 
 function alignWindow() {
@@ -144,7 +157,7 @@ function alignWindow() {
 }
 
 function showWindow() {
-  alignWindow();
+ // alignWindow();
   window.show();
 }
 
@@ -193,4 +206,4 @@ function calculateWindowPosition() {
   return { x: x, y: y };
 }
 
-module.exports = { setOptions, setTray, setWindow, setWindowSize };
+module.exports = { setOptions, setTray, setWindow, setWindowSize, toggleWindow,calculateWindowPosition, setPosition };
